@@ -12,6 +12,7 @@ public class Main {
 			zipReader.setArg(args);
 			t[i] = new Thread(zipReader);
 			t[i].start();
+			//t[i].join(1000);
 		}
 	}
 }

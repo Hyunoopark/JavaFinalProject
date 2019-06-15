@@ -21,10 +21,12 @@ public class ZipReader extends Thread {
 	
 	private String dataPath;
 	private String resultPath;
+	private String secondResultPath;
 	private boolean help;
 	private String[] argument;
 	private File[] resultList;
 	ArrayList<String> saveFile = new ArrayList<String>();
+	ArrayList<String> saveFile2 = new ArrayList<String>();
 
 	/*public static void main(String[] args) {
 		/*int numThreads = 5;
@@ -58,11 +60,15 @@ public class ZipReader extends Thread {
 					getZipFileList(dataPath);
 					
 					for(File f:resultList) {
-						if(f.getName().contains("zip"))
-						readFileInZip(dataPath + f.getName());
+						if(f.getName().contains("zip")) {
+							saveFile.add(f.getName());
+							saveFile2.add(f.getName());
+							readFileInZip(dataPath + f.getName());
+						}
 					}
 					
 					Utils.writeAFile(saveFile, resultPath);
+					Utils.writeAFile(saveFile2, secondResultPath);
 				}
 			}
 		}
@@ -86,6 +92,13 @@ public class ZipReader extends Thread {
 				.desc("Set an output file path")
 				.hasArg()
 				.argName("Output path")
+				.required()
+				.build());
+		
+		options.addOption(Option.builder("o2").longOpt("output2")
+				.desc("Set an second output file path")
+				.hasArg()
+				.argName("Second Output path")
 				.required()
 				.build());
 		 
@@ -112,6 +125,7 @@ public class ZipReader extends Thread {
 			
 			dataPath = cmd.getOptionValue("i");
 			resultPath = cmd.getOptionValue("o");
+			secondResultPath = cmd.getOptionValue("o2");
 			help = cmd.hasOption("h");
 					
 		} catch(Exception e) {
@@ -134,14 +148,15 @@ public class ZipReader extends Thread {
 		File file = new File(path);
 		resultList = file.listFiles();
 		
-		for(int i = 0; i < resultList.length; i++)
-			System.out.println(resultList[i]);
+		/*for(int i = 0; i < resultList.length; i++)
+			System.out.println(resultList[i]);*/
 		
 		return resultList;
 	}
 
 	public void readFileInZip(String path) {
 		ZipFile zipFile;
+		int count = 0;
 		
 		try {
 			zipFile = new ZipFile(path);
@@ -154,8 +169,16 @@ public class ZipReader extends Thread {
 		        ExcelReader myReader = new ExcelReader();
 		       
 		        for(String value:myReader.getData(stream)) {
-		        	saveFile.add(value);
+		        	if(count == 0)
+		        		saveFile.add(value);
+		        	if(count == 1)
+		        		saveFile2.add(value);
 		        }
+		        
+		        count++;
+	
+		        saveFile.add("");
+		        saveFile2.add("");
 		       
 		    }
 		} catch (IOException e) {

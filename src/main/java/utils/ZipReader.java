@@ -40,6 +40,18 @@ public class ZipReader extends Thread {
 		//ZipReader zipReader = new ZipReader();
 		//zipReader.run(args);
 	}*/
+	
+	class Files <T>{
+		private T t;
+		
+		public void set(T t) {
+			this.t = t;
+		}
+		
+		public T get() {
+			return t;
+		}
+	}
 
 	public void run() {
 		try {
@@ -57,13 +69,17 @@ public class ZipReader extends Thread {
 				
 				else {
 					//readFileInZip(dataPath);
-					getZipFileList(dataPath);
+					Files<String> myFile = new Files();
+					
+					myFile.set(dataPath);
+					
+					getZipFileList(myFile.get());
 					
 					for(File f:resultList) {
 						if(f.getName().contains("zip")) {
 							saveFile.add(f.getName());
 							saveFile2.add(f.getName());
-							readFileInZip(dataPath + f.getName());
+							readFileInZip(myFile.get() + f.getName());
 						}
 					}
 					

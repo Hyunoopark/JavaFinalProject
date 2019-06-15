@@ -13,6 +13,7 @@ public class Main {
 			t[i] = new Thread(zipReader);
 			t[i].start();
 			//t[i].join(1000);
+			//t[i].stop();
 		}
 	}
 }

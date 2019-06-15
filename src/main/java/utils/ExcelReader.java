@@ -89,7 +89,7 @@ public class ExcelReader {
                             value = currentCell.getStringCellValue()+"";
                             break;
                         case BLANK:
-                            value = currentCell.getBooleanCellValue()+"";
+                            value = "";
                             break;
                         case ERROR:
                             value = currentCell.getErrorCellValue()+"";

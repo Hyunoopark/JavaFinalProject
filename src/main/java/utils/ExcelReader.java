@@ -33,14 +33,48 @@ public class ExcelReader {
 		try (InputStream inp = new FileInputStream(path)) {
 		    //InputStream inp = new FileInputStream("workbook.xlsx");
 		    
-		        Workbook wb = WorkbookFactory.create(inp);
+			 Workbook wb = WorkbookFactory.create(inp);
 		        Sheet sheet = wb.getSheetAt(0);
-		        Row row = sheet.getRow(2);
-		        Cell cell = row.getCell(1);
-		        if (cell == null)
-		            cell = row.createCell(3);
+		        Iterator<Row> iterator = sheet.iterator();
 		        
-		        values.add(cell.getStringCellValue());
+		        while(iterator.hasNext()) {
+		        	String value = "";
+		        	String lastValue = "";
+		        	
+		        	Row currentRow = iterator.next();
+		        	
+		        	Iterator<Cell> cellIterator = currentRow.iterator();
+		        	
+		        	while(cellIterator.hasNext()) {
+		        		
+		        		Cell currentCell = cellIterator.next();
+		        		
+		        		switch (currentCell.getCellType()){
+                     case FORMULA:
+                         value = currentCell.getCellFormula();
+                         break;
+                     case NUMERIC:
+                         value = currentCell.getNumericCellValue()+"";
+                         break;
+                     case STRING:
+                         value = currentCell.getStringCellValue()+"";
+                         break;
+                     case BLANK:
+                         value = "";
+                         break;
+                     case ERROR:
+                         value = currentCell.getErrorCellValue()+"";
+                         break;
+                     default:
+                         value = new String();
+                         break;
+                     }
+		        		
+		        		lastValue += value + "###";
+		        	}
+		        	
+		        	values.add(lastValue);
+		        }
 		        
 		    } catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
@@ -62,7 +96,6 @@ public class ExcelReader {
 		        Workbook wb = WorkbookFactory.create(inp);
 		        Sheet sheet = wb.getSheetAt(0);
 		        Iterator<Row> iterator = sheet.iterator();
-		        String s = "";
 		        
 		        while(iterator.hasNext()) {
 		        	String value = "";

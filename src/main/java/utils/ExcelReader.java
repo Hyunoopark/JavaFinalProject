@@ -25,8 +25,6 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 public class ExcelReader {
 	
-	//private int cellLength = 0;
-	
 	public ArrayList<String> getData(String path) {
 		ArrayList<String> values = new ArrayList<String>();
 		
@@ -99,19 +97,10 @@ public class ExcelReader {
                             break;
                         }
 		        		
-		        		/*if(!currentCell.getCellType().equals()) {
-		        			
-		        		}*/
-		        		
-		        		lastValue += value + "///";
-		        		
-		        		//cellLength++;
-		        		
-		        		//System.out.print(value + " ");
+		        		lastValue += value + "###";
 		        	}
 		        	
 		        	values.add(lastValue);
-		        	//System.out.println();
 		        }
 		        
 		    } catch (FileNotFoundException e) {

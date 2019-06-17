@@ -15,30 +15,18 @@ public class Utils {
 		
 		try (CSVPrinter printer = new CSVPrinter(new FileWriter(targetFileName), CSVFormat.DEFAULT)) {
 		    for(String line:lines) {
-		    	//if(count%5 == 0) {
-		    		//count = 0;
-		    		String[] aline = line.split("///");
+		    		String[] aline = line.split("###");
 		    		if(aline.length < 5) {
-		    			String aline2 = "///";
+		    			String aline2 = "###";
 		    			aline2 += line;
-		    			String alines2[] = aline2.split("///");
+		    			String alines2[] = aline2.split("###");
 		    			printer.printRecord(alines2);
 		    		}
 		    		else {
 		    			printer.printRecord(aline);
 		    		}
-	
-		    		//addLine = "";
 		    	}
 		    	
-		    	//addLine += line + "//";
-		    	//count++;
-		    	//printer.printRecord(line);*/
-		    	
-		    	//addLine += line + "//";
-		   // }
-		    
-		    //String[] aline = addLine.split("//");
 		    
 		    
 		    System.out.println("Finish!");

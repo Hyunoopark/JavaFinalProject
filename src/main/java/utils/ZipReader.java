@@ -25,33 +25,27 @@ public class ZipReader extends Thread {
 	private boolean help;
 	private String[] argument;
 	private File[] resultList;
-	ArrayList<String> saveFile = new ArrayList<String>();
-	ArrayList<String> saveFile2 = new ArrayList<String>();
+	private ArrayList<String> saveFile = new ArrayList<String>();
+	private ArrayList<String> saveFile2 = new ArrayList<String>();
 
-	/*public static void main(String[] args) {
-		/*int numThreads = 5;
-		Thread[] t = new Thread[numThreads];
-		
-		for(int i=0;i<numThreads;i++) {
-			t[i] = new Thread(new ZipReader());
-			t[i].start();
-		}
-		
-		//ZipReader zipReader = new ZipReader();
-		//zipReader.run(args);
-	}*/
 	
-	class Files <T>{
-		private T t;
-		
-		public void set(T t) {
-			this.t = t;
+	public class MyFile<T> {
+		  private static final int DEFAULT_CAPACITY = 10;
+		  private Object element[];
+		  private int index;
+
+		  public MyFile() {
+		    element = new Object[DEFAULT_CAPACITY];
+		  }
+
+		  public void add(T t) {
+		    this.element[index++] = t;
+		  }
+
+		  public T get(int index){
+		    return (T) element[index];
+		  }
 		}
-		
-		public T get() {
-			return t;
-		}
-	}
 
 	public void run() {
 		try {
@@ -68,18 +62,17 @@ public class ZipReader extends Thread {
 				}
 				
 				else {
-					//readFileInZip(dataPath);
-					Files<String> myFile = new Files();
+					MyFile<String> myFile = new MyFile();
 					
-					myFile.set(dataPath);
+					myFile.add(dataPath);
 					
-					getZipFileList(myFile.get());
+					getZipFileList(myFile.get(0));
 					
 					for(File f:resultList) {
 						if(f.getName().contains("zip")) {
 							saveFile.add(f.getName());
 							saveFile2.add(f.getName());
-							readFileInZip(myFile.get() + f.getName());
+							readFileInZip(myFile.get(0) + f.getName());
 						}
 					}
 					
@@ -128,9 +121,9 @@ public class ZipReader extends Thread {
 	
 	private void printHelp(Options options) {
 		HelpFormatter formatter = new HelpFormatter();
-		String header = "Java Final HW";
+		String header = "Java Final";
 		String footer = "";
-		formatter.printHelp("Java Final HW",header,options,footer,true);
+		formatter.printHelp("Java Final",header,options,footer,true);
 	}
 
 	private boolean parseOption(Options options, String[] args) {
@@ -151,28 +144,17 @@ public class ZipReader extends Thread {
 		
 		return true;	
 	}
-	
-	/*public void fileList(String[] args) {
-		List<File> list = getZipFileList(args[0]);
-	}
-
-	public List<File> getZipFileList(String args) {
-		return getZipFileList(new File(args));
-	}*/
 
 	public File[] getZipFileList(String path) {
 		File file = new File(path);
 		resultList = file.listFiles();
-		
-		/*for(int i = 0; i < resultList.length; i++)
-			System.out.println(resultList[i]);*/
 		
 		return resultList;
 	}
 
 	public void readFileInZip(String path) {
 		ZipFile zipFile;
-		int count = 0;
+		int flag = 0;
 		
 		try {
 			zipFile = new ZipFile(path);
@@ -185,13 +167,12 @@ public class ZipReader extends Thread {
 		        ExcelReader myReader = new ExcelReader();
 		       
 		        for(String value:myReader.getData(stream)) {
-		        	if(count == 0)
+		        	if(flag == 0)
 		        		saveFile.add(value);
-		        	if(count == 1)
+		        	if(flag == 1)
 		        		saveFile2.add(value);
 		        }
-		        
-		        count++;
+		        flag++;
 	
 		        saveFile.add("");
 		        saveFile2.add("");
